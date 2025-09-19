@@ -21,11 +21,11 @@ npm install cypress --save-dev
 npx cypress open
 ```
 3. Na interface do Cypress, clique no arquivo de teste e execute-o.
+Selecione E2E TESTING
+Selecione Browser(Utilizado: Chrome)
+Selecione a Spec: fluxo_magento.cy.js
 
-> Modo headless (CI/CD):
-```bash
-npx cypress run --spec "cypress/e2e/seu_teste.cy.js"
-```
+
 
 ---
 

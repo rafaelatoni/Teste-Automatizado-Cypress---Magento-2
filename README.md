@@ -1,81 +1,98 @@
-Pré-requisitos
+# 🛠️ Automação Cypress — Magento 2 Demo
 
-Node.js instalado
+ Contém instruções para rodar o teste E2E que cobre **criação de conta**, **busca/seleção de produto**, **checkout** e **finalização do pedido**. 🚀
 
-Cypress instalado (npm install cypress)
+---
 
-Internet ativa
+## ✅ Pré-requisitos
+- Node.js instalado  
+- Cypress instalado:
+```bash
+npm install cypress --save-dev
+```
+- Internet ativa 🌐
 
-Como rodar o teste
+---
 
-Abra o terminal na pasta do projeto.
-
-Execute:
-
+## ▶️ Como rodar o teste
+1. Abra o terminal na pasta do projeto.  
+2. Execute:
+```bash
 npx cypress open
+```
+3. Na interface do Cypress, clique no arquivo de teste e execute-o.
 
+> Modo headless (CI/CD):
+```bash
+npx cypress run --spec "cypress/e2e/seu_teste.cy.js"
+```
 
-Na interface do Cypress, clique no arquivo de teste e execute-o.
+---
 
-Passo a Passo do Teste
+## 🧭 Passo a Passo do Teste
 
-Acessa o site
+1. **Acessa o site**  
+   `https://magento2-demo.magebit.com/` 🔗
 
-https://magento2-demo.magebit.com/
+2. **Cria uma conta**  
+   - Clica em **Sign In** → **Create an Account**  
+   - Preenche: nome, sobrenome, **email único** e senha  
+   - Clica em **Create an Account**  
 
-Cria uma conta
+   Exemplo de e-mail único (use no teste):
+   ```js
+   const uniqueEmail = `test+${Date.now()}@example.com`;
+   ```
 
-Clica em "Sign In" → "Create an Account"
+3. **Busca e seleciona um produto**  
+   - Pesquisa por **"Zoe Tank"** 🔎  
+   - Seleciona **tamanho M** e **cor Yellow**  
+   - Adiciona ao carrinho 🛒
 
-Preenche nome, sobrenome, email único e senha
+4. **Valida mensagem do carrinho**  
+   Confirma que aparece:
+   > "You added Zoe Tank to your shopping cart."
+   ```js
+   cy.contains('You added Zoe Tank to your shopping cart.').should('be.visible');
+   ```
 
-Clica em "Create an Account"
+5. **Preenche o checkout**  
+   - Preenche endereço de entrega: Rua, cidade, CEP, telefone  
+   - Seleciona país e estado
 
-Busca e seleciona um produto
+6. **Seleciona envio e pagamento**  
+   - Marca método de envio → **Continue**  
+   - Marca método de pagamento → confirma cobrança igual ao endereço de entrega
 
-Pesquisa por "Zoe Tank"
+   Exemplo de clique no botão Continue:
+   ```js
+   cy.get('button[data-role="opc-continue"], button.button.action.continue.primary')
+     .should('be.visible')
+     .and('not.be.disabled')
+     .click();
+   ```
 
-Seleciona tamanho M e cor Yellow
+7. **Finaliza a compra**  
+   - Clica em **Place Order** quando o botão estiver habilitado:
+   ```js
+   cy.contains('Place Order').should('be.visible').and('not.be.disabled').click();
+   ```
 
-Adiciona ao carrinho
+8. **Valida sucesso da compra**  
+   - Mensagem final esperada: **"Thank you for your purchase!"**
+   ```js
+   cy.contains('Thank you for your purchase!').should('be.visible');
+   ```
 
-Valida mensagem do carrinho
+---
 
-Confirma que aparece:
-"You added Zoe Tank to your shopping cart."
+## 🧩 Boas práticas aplicadas
+- Esperar elementos antes de interagir:  
+  `.should('be.visible').and('not.be.disabled')` ✅  
+- Pequenas pausas quando necessário: `cy.wait()` (usar com parcimônia) ⏱️  
+- Usar emails únicos por teste para evitar conflitos (timestamp) 📧  
+- Validar mensagens/estados após ações importantes 🔍
 
-Preenche o checkout
+---
 
-Preenche endereço de entrega (Rua, cidade, CEP, telefone)
-
-Seleciona país e estado
-
-Seleciona envio e pagamento
-
-Marca método de envio
-
-Clica em Continue
-
-Confirma etapa de pagamento
-
-Marca método de pagamento
-
-Confirma endereço de cobrança igual ao de entrega
-
-Finaliza a compra
-
-Clica no botão "Place Order" quando estiver habilitado
-
-Valida sucesso da compra
-
-Mensagem final: "Thank you for your purchase!"
-
-Boas práticas aplicadas
-
-Espera pelos elementos antes de clicar (.should('be.visible'), .and('not.be.disabled'))
-
-Pequenas pausas (cy.wait) para o carregamento da página
-
-Emails únicos para cada teste
-
-Validações após ações importantes
+Boa automação! 💪🚀
